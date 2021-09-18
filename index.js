@@ -2,10 +2,33 @@ const { PublicKey } = require("@solana/web3.js");
 
 const {
   createAssociatedTokenAccAndTransferToken,
+  createAssociatedTokenAccAndTransferTokenMulti,
   transferToken,
 } = require("./functions/transfer");
 
-createAssociatedTokenAccAndTransferToken(
-  new PublicKey("FNm4hDgT6JE1ZtUqTa59njAEfxu9UJWCjYqtTuPNDSb3"),
-  new PublicKey("7CH4uZ7MFm3iMhNmQFm8uFLPeF1jyscHzJ8MwprPFyvy")
-);
+const fetched = require("./config/constants/owners.json");
+const minted = require("./config/constants/minted.json");
+
+console.log(fetched.length, minted.length);
+
+// (async function transfer() {
+//   for (let i = 0; i < fetched.length; i++) {
+//     let toAccount = fetched[i].owner;
+//     let token = minted[i];
+
+//     try {
+//       let sig = await createAssociatedTokenAccAndTransferToken(
+//         new PublicKey(toAccount),
+//         new PublicKey(token)
+//       );
+//       console.log(sig);
+//       await delay(500);
+//     } catch (e) {
+//       console.log(e);
+//     }
+//   }
+// })();
+
+function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

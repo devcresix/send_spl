@@ -63,6 +63,39 @@ exports.createAssociatedTokenAccAndTransferToken = async (toAccount, token) => {
   return signature;
 };
 
+exports.createAssociatedTokenAccAndTransferTokenMulti = async (
+  toAccounts,
+  tokens
+) => {
+  let transaction = new Transaction();
+
+  for (let i = 0; i < toAccounts.length; i++) {
+    let token = tokens[i];
+    let toAccount = toAccounts[i];
+
+    let fromTokenAccount = await getAssociatedTokenAccount(
+      fromWallet.publicKey,
+      token
+    );
+    let toTokenAccount = await getAssociatedTokenAccount(toAccount, token);
+
+    transaction.add(
+      associatedTokenInstructions(toAccount, token, toTokenAccount)
+    );
+    transaction.add(
+      transferTokenInstructions(token, fromTokenAccount, toTokenAccount)
+    );
+  }
+
+  var signature = await sendAndConfirmTransaction(
+    connection,
+    transaction,
+    [fromWallet],
+    { commitment: "confirmed" }
+  );
+  return signature;
+};
+
 exports.transferToken = async (toAccount, token) => {
   let transaction = new Transaction();
   let fromTokenAccount = await getAssociatedTokenAccount(
